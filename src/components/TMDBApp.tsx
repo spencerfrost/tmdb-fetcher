@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { fetchTMDBData, POSTER_BASE_URL } from '../utils/api';
 import { Item } from '../utils/types';
@@ -19,11 +19,7 @@ export const TMDBApp: React.FC = () => {
   const [fetchByYear, setFetchByYear] = useState<boolean>(false);
   const [year, setYear] = useState<number>(new Date().getFullYear());
 
-  useEffect(() => {
-    fetchData();
-  }, [year, mediaType, fetchByYear]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -51,7 +47,11 @@ export const TMDBApp: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [mediaType, fetchByYear, year]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleYearChange = (newYear: number) => {
     setYear(newYear);
