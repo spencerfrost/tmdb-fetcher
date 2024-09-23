@@ -35,7 +35,6 @@ jobs:
             ssh $SERVER_USER@$SERVER_IP "sudo systemctl restart nginx"
 
 workflows:
-  version: 2
   build_and_deploy:
     jobs:
       - build:
