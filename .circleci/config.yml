@@ -1,0 +1,49 @@
+version: 2.1
+orbs:
+  node: circleci/node@5
+jobs:
+  build-node:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Build the Project
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  deploy:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: /home/circleci/project
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:g4/poytytTBgsZHuaEuvkSFW7DzZ9f8NQefxP6e40nM"
+      - run:
+          name: List built files
+          command: ls -al /home/circleci/project/build
+      - run:
+          name: Deploy to Server
+          command: |
+            scp -vr /home/circleci/project/build/* $SERVER_USER@$SERVER_IP:$SERVER_DIR
+            ssh -v $SERVER_USER@$SERVER_IP "sudo systemctl restart nginx"
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build-node:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - build-node
+          filters:
+            branches:
+              only: master
