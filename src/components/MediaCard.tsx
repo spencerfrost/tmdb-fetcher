@@ -1,28 +1,36 @@
-import { Item } from '@/utils/types';
+import { MediaSummary } from '@/utils/types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from './ui/card';
 
-interface ItemCardProps {
-  item: Item;
+interface MediaCardProps {
+  item: MediaSummary;
 }
 
-const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
+const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
   const tmdbUrl = `https://www.themoviedb.org/${item.mediaType}/${item.id}`;
-  const overseerrUrl = `https://jellyseerr.mrspinn.ca/${item.mediaType}/${item.id}`;
+  const seerrUrl = `https://seerr.mrspinn.ca/${item.mediaType}/${item.id}`;
+  const detailPath = `/${item.mediaType}/${item.id}`;
 
   return (
     <Card className="overflow-hidden bg-gray-800">
       <div className="flex h-full">
-        <div className="w-1/3 min-w-[100px]">
+        <Link to={detailPath} className="w-1/3 min-w-[100px] group overflow-hidden">
           {item.posterPath ? (
-            <img src={item.posterPath} alt={item.title} className="w-full h-full object-cover" />
+            <img
+              src={item.posterPath}
+              alt={item.title}
+              className="w-full h-full object-cover transition duration-200 ease-out group-hover:scale-105"
+            />
           ) : (
             <div className="w-full h-full bg-gray-700 flex items-center justify-center text-gray-400">No Image</div>
           )}
-        </div>
+        </Link>
         <CardContent className="w-2/3 p-4 flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-semibold mb-2 text-dark">{item.title}</h3>
+            <Link to={detailPath} className="inline-block hover:text-blue-300">
+              <h3 className="text-lg font-semibold mb-2 text-dark">{item.title}</h3>
+            </Link>
             <p className="text-sm text-gray-400 mb-2">Release Date: {item.releaseDate}</p>
             <div className="flex space-x-4 mb-2">
               <a
@@ -38,14 +46,14 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
                 />
               </a>
               <a
-                href={overseerrUrl}
+                href={seerrUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="View on Overseerr"
+                title="View on seerr"
               >
                 <img
-                  src="https://overseerr.dev/_next/image?url=%2Fos_logo_filled.svg&w=48&q=75"
-                  alt="Overseerr"
+                  src="https://seerr.dev/os_logo_filled.svg"
+                  alt="Seerr"
                   className="w-6 h-6"
                 />
               </a>
@@ -60,4 +68,4 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
   );
 };
 
-export default ItemCard;
+export default MediaCard;

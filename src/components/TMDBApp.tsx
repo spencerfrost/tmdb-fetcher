@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { fetchTMDBData, POSTER_BASE_URL } from '../utils/api';
-import { Item } from '../utils/types';
-import ItemCard from './ItemCard';
+import { MediaSummary } from '../utils/types';
+import MediaCard from './MediaCard';
 
 import { Alert, AlertDescription } from './ui/alert';
 import { Button } from './ui/button';
@@ -12,7 +12,7 @@ import { Label } from './ui/label';
 import { ToggleGroup } from './ui/ToggleGroup';
 
 export const TMDBApp: React.FC = () => {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setMediaSummarys] = useState<MediaSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<'movie' | 'tv'>('movie');
@@ -25,7 +25,7 @@ export const TMDBApp: React.FC = () => {
     try {
       const data = await fetchTMDBData(mediaType, fetchByYear ? year : undefined);
       
-      const processedData: Item[] = data.results
+      const processedData: MediaSummary[] = data.results
         .filter((item: any) => {
           const releaseDate = new Date(item.release_date || item.first_air_date);
           return !fetchByYear || releaseDate.getFullYear() === year;
@@ -41,7 +41,7 @@ export const TMDBApp: React.FC = () => {
 
       const sortedData = processedData.sort((a, b) => b.rating - a.rating);
       
-      setItems(sortedData);
+      setMediaSummarys(sortedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
@@ -101,8 +101,8 @@ export const TMDBApp: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {items.map((item, index) => (
-          <ItemCard key={index} item={item} />
+        {items.map((item) => (
+          <MediaCard key={item.id} item={item} />
         ))}
       </div>
     </div>
