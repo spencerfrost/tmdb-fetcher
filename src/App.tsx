@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { TMDBApp } from "./components/TMDBApp";
 import DetailPage from "./components/DetailPage";
 import EpisodeDetailView from "./components/EpisodeDetailView";
+import PersonDetailView from "./components/PersonDetailView";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
           </div>
         } />
         <Route path="/:mediaType/:id" element={<DetailPage />} />
+        <Route path="/person/:id" element={<PersonDetailView />} /> 
         <Route 
           path="/tv/:seriesId/season/:seasonNumber/episode/:episodeNumber" 
           element={<EpisodeDetailView />} 

@@ -144,3 +144,18 @@ export const fetchEpisodeDetails = async (
 
   return response.json();
 };
+
+export const fetchPersonDetails = async (personId: number) => {
+  if (!API_KEY || !BASE_URL) {
+    throw new Error('Missing environment variables');
+  }
+
+  const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&language=en-US`;
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch person details');
+  }
+
+  return response.json();
+};

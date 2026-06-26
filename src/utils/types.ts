@@ -116,3 +116,17 @@ export interface CrewMember {
   job: string;
   department: string;
 }
+
+// Add to types.ts
+export interface PersonDetail {
+  id: number;
+  name: string;
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  place_of_birth: string | null;
+  profile_path: string | null;
+  gender: number;
+  known_for_department: string;
+  imdb_id: string;
+}
