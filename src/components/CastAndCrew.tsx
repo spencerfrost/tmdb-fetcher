@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import { MediaDetail } from '../utils/types';
 
 export const CastAndCrew: React.FC<{ media: MediaDetail }> = ({ media }) => {
@@ -9,7 +10,10 @@ export const CastAndCrew: React.FC<{ media: MediaDetail }> = ({ media }) => {
       {director && (
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-white">Director</h3>
-          <p className="text-gray-300">{director.name}</p>
+          {/* Linked Director */}
+          <Link to={`/person/${director.id}`} className="text-gray-300 hover:text-blue-400 transition-colors">
+            {director.name}
+          </Link>
         </div>
       )}
 
@@ -19,14 +23,17 @@ export const CastAndCrew: React.FC<{ media: MediaDetail }> = ({ media }) => {
           <div className="flex gap-4 overflow-x-auto pb-4">
             {media.credits.cast.slice(0, 10).map((person) => (
               <div key={person.id} className="flex-shrink-0 w-32">
-                <div className="w-32 h-48 bg-gray-700 rounded-lg overflow-hidden mb-2">
-                  {person.profile_path ? (
-                    <img src={person.profile_path} alt={person.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex medias-center justify-center text-xs text-gray-500">No Image</div>
-                  )}
-                </div>
-                <p className="text-sm font-bold truncate">{person.name}</p>
+                {/* Linked Image and Name */}
+                <Link to={`/person/${person.id}`} className="block group">
+                  <div className="w-32 h-48 bg-gray-700 rounded-lg overflow-hidden mb-2">
+                    {person.profile_path ? (
+                      <img src={person.profile_path} alt={person.name} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Image</div>
+                    )}
+                  </div>
+                  <p className="text-sm font-bold truncate group-hover:text-blue-400 transition-colors">{person.name}</p>
+                </Link>
                 <p className="text-xs text-gray-400 truncate">{person.character}</p>
               </div>
             ))}

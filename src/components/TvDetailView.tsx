@@ -14,7 +14,6 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // New state for handling seasons and episodes
   const [selectedSeasonNumber, setSelectedSeasonNumber] = useState<number | null>(null);
   const [episodes, setEpisodes] = useState<TvEpisode[]>([]);
   const [loadingEpisodes, setLoadingEpisodes] = useState<boolean>(false);
@@ -56,7 +55,6 @@ const TvDetailView: React.FC<TvDetailViewProps> = ({ id }) => {
         setEpisodes(seasonData.episodes || []);
       } catch (err) {
         console.error("Failed to load episodes", err);
-        // You might want to handle this error in the UI differently
       } finally {
         setLoadingEpisodes(false);
       }
