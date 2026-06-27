@@ -1,4 +1,4 @@
-import type { TMDBDiscoverResponse, MediaDetail } from './types';
+import type { TMDBDiscoverResponse, MediaDetail, FetchMediaParams } from './types';
 
 export const API_KEY = process.env.REACT_APP_API_KEY;
 export const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -91,9 +91,8 @@ export const fetchMediaDetails = async (
   };
 };
 
-export const fetchTMDBData = async (
-  mediaType: "movie" | "tv",
-  year?: number
+export const fetchDiscoverMedia = async (
+  params: FetchMediaParams
 ): Promise<TMDBDiscoverResponse> => {
   const missingVars = [
     !API_KEY ? 'REACT_APP_API_KEY' : null,
@@ -105,9 +104,20 @@ export const fetchTMDBData = async (
     throw new Error(`Missing env var(s): ${missingVars.join(', ')}`);
   }
 
-  const yearParam = year
-    ? `&${mediaType === "movie" ? "primary_release_year" : "first_air_date_year"}=${year}` : "";
-  const url = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1${yearParam}&with_original_language=en`;
+  const { mediaType, searchQuery, year, minRating, sortBy = 'popularity.desc' } = params;
+
+  let url = '';
+
+  if (searchQuery) {
+    // Use the Search endpoint for direct text matches
+    const yearQuery = year ? `&${mediaType === "movie" ? "primary_release_year" : "first_air_date_year"}=${year}` : "";
+    url = `${BASE_URL}/search/${mediaType}?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(searchQuery)}&page=1&include_adult=false${yearQuery}`;
+  } else {
+    // Use the Discover endpoint for advanced filtering
+    const yearParam = year ? `&${mediaType === "movie" ? "primary_release_year" : "first_air_date_year"}=${year}` : "";
+    const ratingParam = minRating ? `&vote_average.gte=${minRating}` : "";
+    url = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&language=en-US&sort_by=${sortBy}&include_adult=false&include_video=false&page=1${yearParam}${ratingParam}&with_original_language=en`;
+  }
 
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch data");
@@ -138,7 +148,8 @@ export const fetchEpisodeDetails = async (
 ) => {
   if (!API_KEY || !BASE_URL) throw new Error('Missing environment variables');
 
-  const url = `${BASE_URL}/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${API_KEY}&language=en-US`;
+  // Requesting credits via append_to_response
+  const url = `${BASE_URL}/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${API_KEY}&append_to_response=credits,images`;
   const response = await fetch(url);
   if (!response.ok) throw new Error('Failed to fetch episode details');
 
@@ -150,7 +161,7 @@ export const fetchPersonDetails = async (personId: number) => {
     throw new Error('Missing environment variables');
   }
 
-  const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&language=en-US`;
+  const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&language=en-US&append_to_response=combined_credits`;
   const response = await fetch(url);
   
   if (!response.ok) {

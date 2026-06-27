@@ -98,7 +98,8 @@ export interface TvSeason {
 export interface EpisodeDetail extends Omit<TvEpisode, 'runtime'> {
   runtime: number;
   crew: { name: string; job: string; department: string }[];
-  guest_stars: { name: string; character: string; profile_path: string | null }[];
+  guest_stars: { id: number; name: string; character: string; profile_path: string | null }[];
+  images?: { stills: { file_path: string }[] };
 }
 
 // --- Shared Entity Types ---
@@ -117,7 +118,23 @@ export interface CrewMember {
   department: string;
 }
 
-// Add to types.ts
+export interface PersonCredit {
+  id: number;
+  title?: string; // Used for movies
+  name?: string; // Used for TV shows
+  character: string;
+  poster_path: string | null;
+  media_type: 'movie' | 'tv';
+  release_date?: string;
+  first_air_date?: string;
+  credit_id: string;
+}
+
+export interface PersonCombinedCredits {
+  cast: PersonCredit[];
+  crew: PersonCredit[];
+}
+
 export interface PersonDetail {
   id: number;
   name: string;
@@ -129,4 +146,13 @@ export interface PersonDetail {
   gender: number;
   known_for_department: string;
   imdb_id: string;
+  combined_credits?: PersonCombinedCredits;
+}
+
+export interface FetchMediaParams {
+  mediaType: "movie" | "tv";
+  searchQuery?: string;
+  year?: number;
+  minRating?: number;
+  sortBy?: string;
 }
