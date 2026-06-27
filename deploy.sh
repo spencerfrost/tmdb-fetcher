@@ -4,7 +4,7 @@
 set -e
 
 PROJECT_ROOT=$(pwd)
-TARGET_DIR="/var/www/YOUR_APP_DIRECTORY_NAME" # <-- Change this to your app's directory!
+TARGET_DIR="/var/www/marquee"
 
 echo "🚀 Starting native local deployment for static application..."
 
