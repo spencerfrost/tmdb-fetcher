@@ -1,45 +1,59 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import { MediaDetail } from '../utils/types';
 
 export const CastAndCrew: React.FC<{ media: MediaDetail }> = ({ media }) => {
   const director = media.credits?.crew.find((c) => c.job === 'Director');
 
-  return (
-    <div className="mt-8 border-t border-gray-700 pt-6">
-      {director && (
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-white">Director</h3>
-          {/* Linked Director */}
-          <Link to={`/person/${director.id}`} className="text-gray-300 hover:text-blue-400 transition-colors">
-            {director.name}
-          </Link>
-        </div>
-      )}
+return (
+  <div className="mt-2">
+    {director && (
+      <div className="mb-6 flex items-center gap-2 text-sm">
+        <span className="font-medium uppercase tracking-wide text-slate-500">Director</span>
+        <Link
+          to={`/person/${director.id}`}
+          className="font-medium text-slate-200 transition-colors hover:text-amber-400"
+        >
+          {director.name}
+        </Link>
+      </div>
+    )}
 
-      {media.credits?.cast && (
-        <>
-          <h3 className="text-lg font-semibold text-white mb-4">Top Cast</h3>
-          <div className="flex gap-4 overflow-x-auto pb-4">
-            {media.credits.cast.slice(0, 10).map((person) => (
-              <div key={person.id} className="flex-shrink-0 w-32">
-                {/* Linked Image and Name */}
-                <Link to={`/person/${person.id}`} className="block group">
-                  <div className="w-32 h-48 bg-gray-700 rounded-lg overflow-hidden mb-2">
-                    {person.profile_path ? (
-                      <img src={person.profile_path} alt={person.name} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Image</div>
-                    )}
+    {media.credits?.cast && media.credits.cast.length > 0 && (
+      <>
+        <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+          Top cast
+        </h3>
+        <div className="-mx-1 flex gap-4 overflow-x-auto px-1 pb-2">
+          {media.credits.cast.slice(0, 10).map((person) => (
+            <Link
+              key={person.id}
+              to={`/person/${person.id}`}
+              className="group w-28 flex-shrink-0"
+            >
+              <div className="mb-2 aspect-[2/3] w-28 overflow-hidden rounded-lg bg-slate-800 ring-1 ring-white/5 transition-all group-hover:ring-amber-500/40">
+                {person.profile_path ? (
+                  <img
+                    src={person.profile_path}
+                    alt={person.name}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center px-2 text-center text-xs text-slate-500">
+                    No image
                   </div>
-                  <p className="text-sm font-bold truncate group-hover:text-blue-400 transition-colors">{person.name}</p>
-                </Link>
-                <p className="text-xs text-gray-400 truncate">{person.character}</p>
+                )}
               </div>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
+              <p className="truncate text-sm font-semibold text-slate-200 transition-colors group-hover:text-amber-400">
+                {person.name}
+              </p>
+              <p className="truncate text-xs text-slate-500">{person.character}</p>
+            </Link>
+          ))}
+        </div>
+      </>
+    )}
+  </div>
+);
 };
