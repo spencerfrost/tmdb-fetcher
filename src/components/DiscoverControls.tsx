@@ -35,7 +35,7 @@ export const DiscoverControls: React.FC<DiscoverControlsProps> = ({
   loading,
 }) => {
   return (
-    <div className="sticky top-4 z-20 mb-8 rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md">
+    <div className="sticky top-4 z-20 rounded-xl border border-slate-800 bg-slate-900/80 p-4 shadow-lg shadow-black/30 backdrop-blur-md">
       <div className="flex flex-col gap-4">
         {/* Top Row: Media Type & Search */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end">

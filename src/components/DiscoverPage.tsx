@@ -69,14 +69,13 @@ export const DiscoverPage: React.FC = () => {
 
       <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6">
         <header className="mb-6 flex items-baseline justify-between">
-          <h1 className="text-lg font-semibold tracking-tight text-slate-100">
-            Discover
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
+            <div className="flex items-center gap-2">
+              <img src='logo192.png' alt="Logo" className="h-16 w-16" />
+              Marquee
+
+            </div>
           </h1>
-          {!loading && (
-            <p className="font-mono text-xs text-slate-500">
-              {items.length} {items.length === 1 ? 'result' : 'results'}
-            </p>
-          )}
         </header>
 
         <DiscoverControls
@@ -101,6 +100,14 @@ export const DiscoverPage: React.FC = () => {
           >
             <AlertDescription>{error}</AlertDescription>
           </Alert>
+        )}
+
+        {!loading && (
+          <div className="my-3 flex items-center justify-end">
+            <p className="font-mono text-xs text-slate-500">
+              {items.length} {items.length === 1 ? 'result' : 'results'}
+            </p>
+          </div>
         )}
 
         {loading ? (
