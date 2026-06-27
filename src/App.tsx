@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { TMDBApp } from "./components/TMDBApp";
+import { DiscoverPage } from "./components/DiscoverPage";
 import DetailPage from "./components/DetailPage";
 import EpisodeDetailView from "./components/EpisodeDetailView";
 import PersonDetailView from "./components/PersonDetailView";
@@ -11,7 +11,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={
           <div className="min-h-screen bg-gray-900 text-white">
-            <TMDBApp />
+            <DiscoverPage />
           </div>
         } />
         <Route path="/:mediaType/:id" element={<DetailPage />} />
