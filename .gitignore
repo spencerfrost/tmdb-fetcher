@@ -24,3 +24,12 @@ yarn-debug.log*
 yarn-error.log*
 .vscode/settings.json
 generate_tree.py
+
+# Env files
+client/.env
+server/.env
+
+server/node_modules/
+client/node_modules/
+server/dist/
+client/build/

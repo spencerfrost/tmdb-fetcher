@@ -30,7 +30,7 @@ A React app for discovering and browsing movies and TV shows using [The Movie Da
 - "Known for" credits, sorted newest first, linking back into movie/TV detail pages
 
 **Cross-cutting**
-- Each card and detail page links out to the title's TMDB page and to a self-hosted Seerr/Overseerr instance for requesting media
+- Each card and detail page links out to the title's TMDB page and to a self-hosted Seerr instance for requesting media
 - Consistent dark UI with a shared rating-score component used across cards, hero sections, and the heatmap
 
 ## Technologies Used
@@ -106,16 +106,6 @@ Key pieces, for orientation:
 - `DetailContainer` — shared page chrome (back navigation) wrapping all detail views
 - `utils/api.ts` — TMDB API calls and response-to-app-type mapping
 - `utils/types.ts` — shared types for media summaries, details, and TMDB response shapes
-
-## Deployment
-
-This project is set up with CircleCI for continuous integration and deployment. The `config.yml` file in the `.circleci` directory defines the build and deploy jobs.
-
-To deploy:
-
-1. Ensure your CircleCI project is connected to your GitHub repository.
-2. Set up the necessary environment variables in CircleCI (e.g., `SERVER_USER`, `SERVER_IP`, `SERVER_DIR`).
-3. Push changes to the `master` branch to trigger the build and deploy workflow.
 
 ## Contributing
 

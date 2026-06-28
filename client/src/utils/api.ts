@@ -1,20 +1,18 @@
 import type { TMDBDiscoverResponse, MediaDetail, FetchMediaParams } from './types';
 
-export const API_KEY = process.env.REACT_APP_API_KEY;
-export const BASE_URL = process.env.REACT_APP_BASE_URL;
+// POSTER_BASE_URL is still needed client-side to build image URLs -
+// it's not a secret, just a CDN path prefix.
 export const POSTER_BASE_URL = process.env.REACT_APP_POSTER_BASE_URL;
 
 export const fetchMediaDetails = async (
   mediaType: "movie" | "tv",
   id: number
 ): Promise<MediaDetail> => {
-  if (!API_KEY || !BASE_URL || !POSTER_BASE_URL) {
-    throw new Error('Missing required environment variables');
+  if (!POSTER_BASE_URL) {
+    throw new Error('Missing required environment variable: REACT_APP_POSTER_BASE_URL');
   }
 
-  const url = `${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}&language=en-US&append_to_response=credits,videos`;
-
-  const response = await fetch(url);
+  const response = await fetch(`/api/media/${mediaType}/${id}`);
   if (!response.ok) throw new Error("Failed to fetch item details");
   const data = await response.json();
 
@@ -94,50 +92,23 @@ export const fetchMediaDetails = async (
 export const fetchDiscoverMedia = async (
   params: FetchMediaParams
 ): Promise<TMDBDiscoverResponse> => {
-  const missingVars = [
-    !API_KEY ? 'REACT_APP_API_KEY' : null,
-    !BASE_URL ? 'REACT_APP_BASE_URL' : null,
-    !POSTER_BASE_URL ? 'REACT_APP_POSTER_BASE_URL' : null,
-  ].filter(Boolean) as string[];
-
-  if (missingVars.length > 0) {
-    throw new Error(`Missing env var(s): ${missingVars.join(', ')}`);
-  }
-
   const { mediaType, searchQuery, year, minRating, sortBy = 'popularity.desc' } = params;
 
-  let url = '';
+  const query = new URLSearchParams();
+  if (searchQuery) query.set('searchQuery', searchQuery);
+  if (year) query.set('year', String(year));
+  if (minRating) query.set('minRating', String(minRating));
+  query.set('sortBy', sortBy);
 
-  if (searchQuery) {
-    // Use the Search endpoint for direct text matches
-    const yearQuery = year ? `&${mediaType === "movie" ? "primary_release_year" : "first_air_date_year"}=${year}` : "";
-    url = `${BASE_URL}/search/${mediaType}?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(searchQuery)}&page=1&include_adult=false${yearQuery}`;
-  } else {
-    // Use the Discover endpoint for advanced filtering
-    const yearParam = year ? `&${mediaType === "movie" ? "primary_release_year" : "first_air_date_year"}=${year}` : "";
-    const ratingParam = minRating ? `&vote_average.gte=${minRating}` : "";
-    url = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&language=en-US&sort_by=${sortBy}&include_adult=false&include_video=false&page=1${yearParam}${ratingParam}&with_original_language=en`;
-  }
-
-  const response = await fetch(url);
+  const response = await fetch(`/api/discover/${mediaType}?${query.toString()}`);
   if (!response.ok) throw new Error("Failed to fetch data");
   const data = await response.json();
   return data as TMDBDiscoverResponse;
 };
 
 export const fetchSeasonDetails = async (seriesId: number, seasonNumber: number) => {
-  if (!API_KEY || !BASE_URL) {
-    throw new Error('Missing required environment variables');
-  }
-
-  const url = `${BASE_URL}/tv/${seriesId}/season/${seasonNumber}?api_key=${API_KEY}&language=en-US`;
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch season details');
-  }
-
+  const response = await fetch(`/api/tv/${seriesId}/season/${seasonNumber}`);
+  if (!response.ok) throw new Error('Failed to fetch season details');
   return response.json();
 };
 
@@ -146,27 +117,13 @@ export const fetchEpisodeDetails = async (
   seasonNumber: number,
   episodeNumber: number
 ) => {
-  if (!API_KEY || !BASE_URL) throw new Error('Missing environment variables');
-
-  // Requesting credits via append_to_response
-  const url = `${BASE_URL}/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}?api_key=${API_KEY}&append_to_response=credits,images`;
-  const response = await fetch(url);
+  const response = await fetch(`/api/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}`);
   if (!response.ok) throw new Error('Failed to fetch episode details');
-
   return response.json();
 };
 
 export const fetchPersonDetails = async (personId: number) => {
-  if (!API_KEY || !BASE_URL) {
-    throw new Error('Missing environment variables');
-  }
-
-  const url = `${BASE_URL}/person/${personId}?api_key=${API_KEY}&language=en-US&append_to_response=combined_credits`;
-  const response = await fetch(url);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch person details');
-  }
-
+  const response = await fetch(`/api/person/${personId}`);
+  if (!response.ok) throw new Error('Failed to fetch person details');
   return response.json();
 };
